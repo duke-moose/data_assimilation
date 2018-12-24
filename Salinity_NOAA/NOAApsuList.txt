@@ -1,0 +1,9 @@
+GDQM6.ocean
+MBLA1.ocean
+KATA1.ocean
+CRTA1.ocean
+DPHA1.ocean
+MHPA1.ocean
+BSCA1.ocean
+WKQA1.ocean
+PPTA1.ocean
