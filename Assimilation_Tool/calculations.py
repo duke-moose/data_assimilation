@@ -24,17 +24,19 @@ def writedicttocsv(csv_file, csv_columns, dict_data):
     return
 
 
-def average_all_values(file_dir, file_path, start_date, end_date=None):
+def average_all_values(LPBF_dict, start_date, end_date=None):
     # Creates summary CSV with all stations averaged in a user defined date range.
 
+    file_path = LPBF_dict["file_path"]
+    file_dir = LPBF_dict["file_dir"]
     # Build date YYMMDD.
     # Create blank dictionary to save results.
-    date = str(start_date.year) + str(start_date.month) + str(start_date.day)
+    date = start_date.strftime('%Y%m%d')
     result = {}
 
     # Identify directory where CSV files are present.
     # Loop through CSV station files in directory and average them.
-    csvfile_dir = os.path.join(file_path, file_dir, date, 'date_filtered_csv')
+    csvfile_dir = os.path.join(file_path, date, 'date_filtered_csv')
     for station in os.listdir(csvfile_dir):
         csvfile = os.path.join(csvfile_dir, station)
 
@@ -88,22 +90,24 @@ def average_all_values(file_dir, file_path, start_date, end_date=None):
 
     # Create CSV file to save station averages.
     # Save results in CSV.
-    result_file = os.path.join(file_path, file_dir, date, "Averages.csv")
+    result_file = os.path.join(file_path, date, "Averages.csv")
     with open(result_file, 'w') as csv_file:
         writer = csv.writer(csv_file)
         for key, value in result.items():
             writer.writerow([key, value])
 
 
-def average_hourly_values(file_dir, file_path, start_date, end_date=None):
+def average_hourly_values(LPBF_dict, start_date, end_date=None):
     # Creates summary CSV with wind speeds, directions, and East to West/North to South
     # vectors averaged for each station.
 
+    file_path = LPBF_dict["file_path"]
+    file_dir = LPBF_dict["file_dir"]
     # Build date YYMMDD.
-    date = str(start_date.year) + str(start_date.month) + str(start_date.day)
+    date = start_date.strftime('%Y%m%d')
 
     # Identify directory where CSV files are present.
-    csvfile_dir = os.path.join(file_path, file_dir, date, 'date_filtered_csv')
+    csvfile_dir = os.path.join(file_path, date, 'date_filtered_csv')
 
     # Loop through CSV station files in directory and average them.
     for station in os.listdir(csvfile_dir):
@@ -160,5 +164,5 @@ def average_hourly_values(file_dir, file_path, start_date, end_date=None):
 
                     # Create CSV file to save station averages.
                     # Save results in CSV.
-                    result_file = os.path.join(file_path, file_dir, date, date + '_' + str(station.split('.')[0]) + "_NOAA_Wind.csv")
+                    result_file = os.path.join(file_path, date, date + '_' + str(station.split('.')[0]) + "_NOAA_Wind.csv")
                     writedicttocsv(result_file, title, result)

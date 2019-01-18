@@ -61,102 +61,58 @@ def make_monday(date):
     monday = date_adjustment(date, day=shift).strftime('%Y%m%d')
     return monday
 
-def NOAA_ocean_filter(txt_lines, start_date, end_date):
-# Filters input file to user defined date range.
-# Input path to station txt or csv file, start_date and end_date datetime.datetime objects..
-# Output CSV file of salinity values from start_date to end_date datetime.datetime objects.
-
-    # Index location for specific values.
-    year = 0
-    month = 1
-    day = 2
-    hour = 3
-    minute = 4
+def filter(LPBF_dict, txt_lines, start_date, end_date):
+    # Filters input file to user defined date range.
+    # Input path to station txt or csv file, start_date and end_date datetime.datetime objects..
+    # Output CSV file of salinity values from start_date to end_date datetime.datetime objects.
 
     csv_lines = []
-    for line in txt_lines:
-        try:
-            # First two lines of these files contain the following headers.
-            # Filter starts at lines with dates. This might change in the future.
-            if line[year] in ["#YY", "#yr"]:
-                csv_lines.append(line)
-            elif int(line[month]) <= 12:
-                d_t = line[month] + "/" + line[day] + "/" + line[year] + " " + line[hour] + ":" + line[minute]
-                d_t = try_strptime(d_t)
+    # Search for the NOAA organization with year, month, day, hour, and minute in
+    # multiple columns.
 
-                if d_t <= start_date and d_t >= end_date:
+    if all (key in LPBF_dict["file_organization"] for key in ["year", "month", "day", "hour", "minute"]):
+        year = LPBF_dict["file_organization"]["year"]
+        month = LPBF_dict["file_organization"]["month"]
+        day = LPBF_dict["file_organization"]["day"]
+        hour = LPBF_dict["file_organization"]["hour"]
+        minute = LPBF_dict["file_organization"]["minute"]
+        header = LPBF_dict["first_col_header"]
+
+        for line in txt_lines:
+            try:
+                # First two lines of these files contain the following headers.
+                # Filter starts at lines with dates. This might change in the future.
+                if line[year] in [header]:
                     csv_lines.append(line)
+                elif int(line[month]) <= 12:
+                    d_t = line[month] + "/" + line[day] + "/" + line[year] + " " + line[hour] + ":" + line[minute]
+                    d_t = try_strptime(d_t)
 
-        except ValueError:
-            pass
-        except IndexError:
-            pass
-        continue
+                    if d_t <= start_date and d_t >= end_date:
+                        csv_lines.append(line)
+            except ValueError:
+                pass
+            except IndexError:
+                pass
 
+    elif all (key in LPBF_dict["file_organization"] for key in ["station_owner", "station_date", "station_time"]):
+        station_owner = LPBF_dict["file_organization"]["station_owner"]
+        station_date = LPBF_dict["file_organization"]["station_date"]
+        station_time = LPBF_dict["file_organization"]["station_time"]
+        header = LPBF_dict["first_col_header"]
+        for line in txt_lines:
+            try:
+                # Begins filter past initial station text because the first line of data
+                # contains "USGS" name. This might change in the future.
+                if line[station_owner] in [header]:
+                    d_t = (line[station_date] + " " + line[station_time])
+                    d_t = try_strptime(d_t)
+                    if d_t <= start_date and d_t >= end_date:
+                        csv_lines.append(line)
+            except IndexError:
+                pass
+    else:
+        print("Need to make a new filter format for this station file.")
+        # Below here is the place to add new filters as they become necessary.
 
-    return(csv_lines)
-
-def USGS_salinity_filter(txt_lines, start_date, end_date):
-# Filters input file to user defined date range.
-# Input path to station txt or csv file, start_date and end_date datetime.datetime objects..
-# Output CSV file of salinity values from start_date to end_date datetime.datetime objects.
-
-    # Index location for specific values.
-    station_owner = 0
-    station_date = 2
-    station_time = 3
-
-    csv_lines = []
-
-    for line in txt_lines:
-
-        try:
-            # Begins filter past initial station text because the first line of data
-            # contains "USGS" name. This might change in the future.
-            if line[station_owner] in ['USGS']:
-                d_t = (line[station_date] + " " + line[station_time])
-                d_t = try_strptime(d_t)
-                if d_t <= start_date and d_t >= end_date:
-                    csv_lines.append(line)
-
-        except IndexError:
-            pass
-        continue
-
-
-    return(csv_lines)
-
-def NOAA_wind_filter(txt_lines, start_date, end_date):
-# Filters input file to user defined date range.
-# Input path to station txt or csv file, start_date and end_date datetime.datetime objects..
-# Output CSV file of salinity values from start_date to end_date datetime.datetime objects.
-
-    # Index location for specific values.
-    year = 0
-    month = 1
-    day = 2
-    hour = 3
-    minute = 4
-
-    csv_lines = []
-
-    for line in txt_lines:
-        try:
-            # First two lines of these files contain the following headers.
-            # Filter starts at lines with dates. This might change in the future.
-            if line[year] in ["#YY", "#yr"]:
-                csv_lines.append(line)
-            elif int(line[month]) <= 12:
-                d_t = line[month] + "/" + line[day] + "/" + line[year] + " " + line[hour] + ":" + line[minute]
-                d_t = try_strptime(d_t)
-
-                if d_t <= start_date and d_t >= end_date:
-                    csv_lines.append(line)
-
-        except ValueError:
-            pass
-        except IndexError:
-            pass
-        continue
-
-    return(csv_lines)
+    return (csv_lines)

@@ -25,10 +25,13 @@ class Test_calculations(unittest.TestCase):
         num_check = at.calculations.average(num)
         self.assertTrue(num_check == 3)
 
+# class Test_Data_Collection(unittest.TestCase):
+#
+#     def test_scrape_gauges_dict(self):
 
 class Test_Tool_Filters(unittest.TestCase):
 
-    def test_monday(self):
+    def test_make_monday(self):
         dict = {
             'test day1': [2018, 11, 2, '20181029'],
             'test day2': [2017, 1, 1, '20161226'],
