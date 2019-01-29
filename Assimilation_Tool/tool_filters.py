@@ -82,7 +82,7 @@ def filter(LPBF_dict, txt_lines, start_date, end_date):
             try:
                 # First two lines of these files contain the following headers.
                 # Filter starts at lines with dates. This might change in the future.
-                if line[year] in [header]:
+                if line[year] in header:
                     csv_lines.append(line)
                 elif int(line[month]) <= 12:
                     d_t = line[month] + "/" + line[day] + "/" + line[year] + " " + line[hour] + ":" + line[minute]
@@ -100,11 +100,12 @@ def filter(LPBF_dict, txt_lines, start_date, end_date):
         station_date = LPBF_dict["file_organization"]["station_date"]
         station_time = LPBF_dict["file_organization"]["station_time"]
         header = LPBF_dict["first_col_header"]
+
         for line in txt_lines:
             try:
                 # Begins filter past initial station text because the first line of data
                 # contains "USGS" name. This might change in the future.
-                if line[station_owner] in [header]:
+                if line[station_owner] in header:
                     d_t = (line[station_date] + " " + line[station_time])
                     d_t = try_strptime(d_t)
                     if d_t <= start_date and d_t >= end_date:

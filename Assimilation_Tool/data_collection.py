@@ -73,7 +73,6 @@ def save_gauge_to_csv(LPBF_dict, start_date, end_date):
 
                 # Filter Stations by date
                 csv_lines = Assimilation_Tool.tool_filters.filter(LPBF_dict, txt_lines, start_date, end_date)
-
                 # Initiate filter based on Station Type.
                 # if file_dir is 'Salinity_NOAA':
                     # csv_lines = Assimilation_Tool.tool_filters.NOAA_ocean_filter(txt_lines, start_date, end_date)
