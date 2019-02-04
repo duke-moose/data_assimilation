@@ -58,6 +58,7 @@ def average_all_values(LPBF_dict, start_date, end_date=None):
                         continue
 
             elif file_dir is 'Salinity_USGS':
+                # print(csvfile)
                 with open(csvfile, 'r') as infile:
                     sal = []
                     reader = csv.reader(infile)
@@ -66,6 +67,8 @@ def average_all_values(LPBF_dict, start_date, end_date=None):
                             # Convert to a float.
                             sal.append(float(line[5]))
                         except IndexError:
+                            pass
+                        except ValueError:
                             pass
                         continue
 
