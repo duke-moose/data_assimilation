@@ -16,7 +16,8 @@ import os
 # 5. Future stations can be added to their respective files without re-coding... just append new station number.
 
 if platform.system() in "Windows":
-    file_path = 'G:\\users\\COASTAL\\Hydrocoast\\Data Assimilation\\Data\\data_assimilation'
+#    file_path = 'G:\\users\\COASTAL\\Hydrocoast\\Data Assimilation\\Data\\data_assimilation'
+    file_path = 'G:\\COASTAL\\Hydrocoast\\Data Assimilation\Data\\data_assimilation'
 elif platform.system() in "Linux":
     file_path = '/home/sogood/Documents/Python/LPBF/Data Assimilation/Data/data_assimilation'
 
